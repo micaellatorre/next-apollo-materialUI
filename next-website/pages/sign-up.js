@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Logo from "../media/icons/ospia.svg";
 import ReCAPTCHA from 'react-google-recaptcha';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 /*
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  
+
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  
+
   logo: {
     transform: 'scale(0.5)',
   }
@@ -57,8 +57,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
 
   const classes = useStyles();
-  const { register, handleSubmit } = useForm();
-  
+  const { register, handleSubmit, control } = useForm();
+
   /* ReCAPTCHA  
   const verifyCallback = function (response) {
     console.log(response);
@@ -74,7 +74,7 @@ export default function SignUp() {
       <div className={classes.paper}>
         {/* Check Logo Animation on Scroll */}
         <div className={classes.logo}>
-          <Logo alt="OSPIA"/>
+          <Logo alt="OSPIA" />
         </div>
 
         <Typography component="h1" variant="h5">
@@ -82,46 +82,80 @@ export default function SignUp() {
         </Typography>
 
         <form className={classes.form} noValidate onSubmit={handleSubmit((data) => alert(JSON.stringify(data)))}>
-          
+
           <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="name"
-                  name="firstName"
-                  variant="outlined"
-                  inputRef={register("usuario")}
-                  required
-                  fullWidth
-                  id="usuario"
-                  label="Nombre y Apellido o Razón Social"
-                  autoFocus
-                />
-              </Grid>
-            
+
             <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                inputRef={register("email")}
-                required
-                fullWidth
-                id="email"
-                label="Correo Electrónico"
-                name="email"
-                autoComplete="email"
+              <Controller
+                name="fname"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <TextField
+                    label="Apellido y Nombre o Razón Social"
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    fullWidth
+                    autoFocus
+                    id="fname"
+                    name="fname"
+                    autoComplete="fname"
+                    required
+                    helperText={error ? error.message : null}
+                  />
+                )
+                }
+                rules={{ required: 'Campo Obligatorio' }}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                inputRef={register("email")}
-                required
-                fullWidth
+              <Controller
+                name="email"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <TextField
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    required
+                    fullWidth
+                    id="email"
+                    label="Correo Electrónico"
+                    name="email"
+                    autoComplete="email"
+                    helperText={error ? error.message : null}
+                  />
+                )
+                }
+                rules={{ required: 'Campo Obligatorio. Formato: juanperez@email.com' }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
                 name="password"
-                label="Contraseña"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <TextField
+                    variant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    required
+                    fullWidth
+                    name="password"
+                    label="Contraseña"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    helperText={error ? error.message : null}
+                  />
+                )
+                }
+                rules={{ required: 'Campo Obligatorio. Ingresar entre 8 y 12 caracteres. Debe contener al menos un número, una letra, una minúscula y una mayúscula.' }}
               />
             </Grid>
 
@@ -129,11 +163,11 @@ export default function SignUp() {
               <ReCAPTCHA
                 sitekey="6LfG3FkcAAAAAG-ijamNanUtajZwipn_6ACldiIz"
                 render="explicit"
-                /* verifyCallback={verifyCallback}
-                onloadCallback={callback} */
+              /* verifyCallback={verifyCallback}
+              onloadCallback={callback} */
               />
             </Grid>
-            
+
           </Grid>
 
           <Button
